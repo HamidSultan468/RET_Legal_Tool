@@ -157,7 +157,7 @@ This opens the app in your browser, usually at `http://localhost:8501`. Use the 
 - Custom CSS is injected in `main.py` — check the browser console for errors, and confirm you're running `main.py` directly (not one of the files inside `tools/`, `CanLII_Tool/`, or `Ingestion_Tool/`).
 
 ### Large PDFs are slow or the app crashes/restarts (especially on free hosting)
-- OCR processes one page at a time by design to control memory use. If it's still too slow/heavy, lower `PDF_DPI` in `tools/document_ingestion.py` (currently `150`) — lower DPI = faster and lighter, but less accurate OCR.
+- OCR processes one page at a time by design to control memory use. If it's still too slow/heavy, lower `PDF_DPI` in `tools/ocr_preprocessing.py` (currently `400`) — lower DPI = faster and lighter, but less accurate OCR.
 
 ### General debugging tips
 - Run `streamlit run main.py` from a terminal (not double-clicking a file) so you can see the full error traceback.

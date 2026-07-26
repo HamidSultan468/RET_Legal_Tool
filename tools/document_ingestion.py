@@ -1,5 +1,4 @@
 import streamlit as st
-import pytesseract
 from pdf2image import convert_from_path, pdfinfo_from_path
 from PIL import Image
 import pandas as pd
@@ -7,10 +6,13 @@ import gc
 import os
 import uuid
 
+from tools.ocr_preprocessing import PDF_DPI, preprocess_image, run_ocr
+
 
 def _ocr_lines(img, source_name, page_num, confidence_threshold):
-    """Run OCR on a single page image and return extracted line rows."""
-    ocr_data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+    """Preprocess and run OCR on a single page image, returning extracted line rows."""
+    img = preprocess_image(img)
+    ocr_data = run_ocr(img)
 
     n_boxes = len(ocr_data['text'])
     line_text = ""
@@ -61,9 +63,8 @@ def run():
     st.write("Upload scanned client documents (PDF or images) to extract text with OCR.")
 
     CONFIDENCE_THRESHOLD = 60
-    # 150 DPI keeps OCR accuracy usable while staying well under the 1GB
-    # RAM limit on Streamlit Community Cloud's free tier.
-    PDF_DPI = 150
+    # PDF_DPI and Tesseract config now live in tools/ocr_preprocessing.py,
+    # shared with the standalone Ingestion_Tool/scripts/ingest_ocr.py script.
 
     with st.container(border=True):
         uploaded_files = st.file_uploader(
