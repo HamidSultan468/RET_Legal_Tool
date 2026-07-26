@@ -24,6 +24,14 @@ CUSTOM_CSS = """
         --brand-border: #E3E8EB;
         --brand-purple: #6C5DD3;
         --brand-purple-light: #8B7FE8;
+
+        /* Dark admin-panel sidebar palette */
+        --sidebar-bg-top: #1A2030;
+        --sidebar-bg-bottom: #10141F;
+        --sidebar-text: #C9CEDA;
+        --sidebar-text-muted: #6E7690;
+        --sidebar-text-bright: #FFFFFF;
+        --sidebar-hover-bg: rgba(255, 255, 255, 0.07);
     }
 
     #MainMenu {visibility: hidden;}
@@ -36,241 +44,282 @@ CUSTOM_CSS = """
     }
 
     .block-container {
-        padding-top: 1.75rem;
-        padding-bottom: 3rem;
+        padding-top: 2.4rem;
+        padding-bottom: 4rem;
+        max-width: 1200px;
+    }
+
+    /* Breathing room between widgets across the whole app */
+    div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] {
+        margin-bottom: 0.9rem;
+    }
+    .stTextInput label, .stSelectbox label, .stNumberInput label,
+    .stFileUploader label, .stTextArea label {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+        color: var(--brand-navy) !important;
     }
 
     /* ---------- Header ---------- */
     .app-header {
         display: flex;
         align-items: center;
-        gap: 0.7rem;
-        padding: 0.9rem 1.2rem;
-        margin-bottom: 1.5rem;
-        border-radius: 12px;
+        gap: 0.9rem;
+        padding: 1.4rem 1.8rem;
+        margin-bottom: 2.2rem;
+        border-radius: 16px;
         background: linear-gradient(120deg, var(--brand-navy) 0%, var(--brand-teal) 100%);
-        box-shadow: 0 4px 14px rgba(20, 55, 74, 0.18);
+        box-shadow: 0 8px 24px rgba(20, 55, 74, 0.22);
     }
     .app-header h1 {
         margin: 0;
-        font-size: 1.55rem;
+        font-size: 1.9rem;
         color: #FFFFFF;
         letter-spacing: 0.2px;
     }
     .app-header p {
         margin: 0;
         color: #D7E9EC;
-        font-size: 0.88rem;
+        font-size: 0.95rem;
     }
 
-    /* ---------- Sidebar ---------- */
-    section[data-testid="stSidebar"] {
-        border-right: 1px solid var(--brand-border);
-        background: linear-gradient(180deg, #FFFFFF 0%, #F3F7F8 100%);
+    /* =========================================================
+       SIDEBAR -- dark admin-panel theme
+       ========================================================= */
+    section[data-testid="stSidebar"],
+    section[data-testid="stSidebar"] > div,
+    div[data-testid="stSidebarContent"],
+    div[data-testid="stSidebarUserContent"] {
+        background: linear-gradient(180deg, var(--sidebar-bg-top) 0%, var(--sidebar-bg-bottom) 100%) !important;
     }
+    section[data-testid="stSidebar"] {
+        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+        padding-top: 0.5rem;
+    }
+    section[data-testid="stSidebar"] * {
+        color: var(--sidebar-text);
+    }
+    div[data-testid="stSidebarUserContent"] {
+        padding: 1.6rem 1.3rem 2rem 1.3rem !important;
+    }
+
     .sidebar-brand {
-        font-size: 1.25rem;
+        font-size: 1.4rem;
         font-weight: 800;
-        color: var(--brand-navy);
+        color: var(--sidebar-text-bright) !important;
         margin-bottom: 0;
         letter-spacing: 0.2px;
     }
     .sidebar-tagline {
-        font-size: 0.76rem;
-        color: #8A97A0;
-        margin-top: -4px;
-        margin-bottom: 1rem;
+        font-size: 0.78rem;
+        color: var(--sidebar-text-muted) !important;
+        margin-top: -2px;
+        margin-bottom: 1.6rem;
         text-transform: uppercase;
-        letter-spacing: 0.6px;
+        letter-spacing: 0.8px;
     }
 
-    /* ---------- Sidebar: tree-menu navigation ---------- */
     .sidebar-group-label {
         display: flex;
         align-items: center;
         gap: 0.4rem;
         font-size: 0.72rem;
         font-weight: 700;
-        color: #8A97A0;
+        color: var(--sidebar-text-muted) !important;
         text-transform: uppercase;
-        letter-spacing: 0.7px;
-        margin: 0.2rem 0 0.55rem 0.1rem;
+        letter-spacing: 1.1px;
+        margin: 0.4rem 0 0.9rem 0.2rem;
     }
     .sidebar-group-label .chevron {
         font-size: 0.62rem;
-        color: var(--brand-purple);
-        transition: transform 0.15s ease;
+        color: var(--brand-purple-light) !important;
     }
 
+    /* Nav list */
     section[data-testid="stSidebar"] div[role="radiogroup"] {
-        position: relative;
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
-        padding-left: 0.9rem;
-        margin-left: 0.25rem;
-    }
-    /* vertical tree connector line */
-    section[data-testid="stSidebar"] div[role="radiogroup"]::before {
-        content: "";
-        position: absolute;
-        left: 0.28rem;
-        top: 0.4rem;
-        bottom: 0.4rem;
-        width: 2px;
-        border-radius: 2px;
-        background: linear-gradient(180deg, var(--brand-teal-light) 0%, var(--brand-purple) 100%);
-        opacity: 0.35;
+        gap: 0.5rem;
     }
     section[data-testid="stSidebar"] div[role="radiogroup"] label {
-        position: relative;
-        padding: 0.55rem 0.75rem;
-        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        padding: 0.85rem 1.1rem !important;
+        border-radius: 12px !important;
         margin-bottom: 0;
-        transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+        transition: background 0.18s ease, transform 0.12s ease;
         border: 1px solid transparent;
+        cursor: pointer;
     }
-    /* small horizontal branch connecting the tree line to each item */
-    section[data-testid="stSidebar"] div[role="radiogroup"] label::before {
-        content: "";
-        position: absolute;
-        left: -0.62rem;
-        top: 50%;
-        width: 0.45rem;
-        height: 2px;
-        background: var(--brand-border);
-    }
-    /* hide the native radio dot for a cleaner menu-item look */
+    /* hide the native radio dot -- these read as nav list items, not a form control */
     section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {
         display: none;
     }
-    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-        background: #EEF1FC;
-        border-color: var(--brand-border);
-        transform: translateX(2px);
+    section[data-testid="stSidebar"] div[role="radiogroup"] label p {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: var(--sidebar-text) !important;
+        margin: 0;
     }
-    /* active/selected tool: purple-to-teal highlight */
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        background: var(--sidebar-hover-bg) !important;
+        transform: translateX(3px);
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover p {
+        color: var(--sidebar-text-bright) !important;
+    }
+    /* Active tool: solid purple-to-teal pill */
     section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
-        background: linear-gradient(120deg, rgba(108, 93, 211, 0.16) 0%, rgba(46, 150, 163, 0.18) 100%);
-        border-color: var(--brand-purple-light);
-        box-shadow: inset 3px 0 0 0 var(--brand-purple);
+        background: linear-gradient(120deg, var(--brand-purple) 0%, var(--brand-teal-light) 100%) !important;
+        box-shadow: 0 6px 16px rgba(108, 93, 211, 0.45);
     }
     section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p {
-        color: var(--brand-navy);
-        font-weight: 700;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
     }
 
-    /* ---------- Buttons: pill-shaped CTAs ---------- */
-    div.stButton > button, div[data-testid="stDownloadButton"] > button {
-        display: inline-flex;
+    section[data-testid="stSidebar"] hr {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        margin: 1.6rem 0 1.2rem 0 !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"],
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+        color: var(--sidebar-text-muted) !important;
+        font-size: 0.78rem !important;
+    }
+
+    /* ---------- Sidebar status badge ---------- */
+    .sidebar-badge {
+        display: inline-block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        background: #E4F5EA;
+        color: #1E6B3E !important;
+        border: 1px solid #BEE6CC;
+        margin-top: 0.4rem;
+    }
+    .sidebar-badge, .sidebar-badge * { color: #1E6B3E !important; }
+
+    /* =========================================================
+       BUTTONS -- big, bold, gradient pills
+       ========================================================= */
+    div.stButton > button,
+    div[data-testid="stDownloadButton"] > button,
+    section[data-testid="stFileUploaderDropzone"] button {
+        display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        gap: 0.45rem;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        padding: 0.45rem 1.3rem;
-        min-height: 2.3rem;
-        border: 1px solid var(--brand-border);
-        box-shadow: 0 2px 6px rgba(20, 55, 74, 0.08);
+        gap: 0.6rem;
+        border-radius: 50px !important;
+        font-weight: 700 !important;
+        font-size: 1.02rem !important;
+        padding: 0.85rem 1.9rem !important;
+        min-height: 3rem;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(20, 55, 74, 0.14);
         transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+        letter-spacing: 0.2px;
     }
-    div.stButton > button:hover, div[data-testid="stDownloadButton"] > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(20, 55, 74, 0.22);
+    div.stButton > button:hover,
+    div[data-testid="stDownloadButton"] > button:hover,
+    section[data-testid="stFileUploaderDropzone"] button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 26px rgba(20, 55, 74, 0.3);
     }
-    div.stButton > button:active, div[data-testid="stDownloadButton"] > button:active {
-        transform: translateY(0);
+    div.stButton > button:active,
+    div[data-testid="stDownloadButton"] > button:active,
+    section[data-testid="stFileUploaderDropzone"] button:active {
+        transform: translateY(-1px);
     }
+
     div.stButton > button[kind="primary"], div[data-testid="stDownloadButton"] > button {
-        background: linear-gradient(120deg, var(--brand-teal) 0%, var(--brand-navy) 100%);
-        border-color: var(--brand-navy);
-        color: #FFFFFF;
+        background: linear-gradient(120deg, var(--brand-teal) 0%, var(--brand-navy) 100%) !important;
+        color: #FFFFFF !important;
     }
     div.stButton > button[kind="primary"]:hover, div[data-testid="stDownloadButton"] > button:hover {
-        background: linear-gradient(120deg, var(--brand-teal-light) 0%, var(--brand-teal) 100%);
-        border-color: var(--brand-teal);
-        color: #FFFFFF;
+        background: linear-gradient(120deg, var(--brand-teal-light) 0%, var(--brand-teal) 100%) !important;
     }
     div.stButton > button[kind="primary"]::after {
         content: "→";
+        font-size: 1.2em;
         font-weight: 700;
         transition: transform 0.15s ease;
     }
     div.stButton > button[kind="primary"]:hover::after {
-        transform: translateX(3px);
+        transform: translateX(4px);
     }
+
     div.stButton > button[kind="secondary"] {
-        background: #FFFFFF;
-        color: var(--brand-navy);
+        background: #FFFFFF !important;
+        color: var(--brand-navy) !important;
+        border: 2px solid var(--brand-border) !important;
     }
     div.stButton > button[kind="secondary"]:hover {
-        border-color: var(--brand-gold);
-        color: var(--brand-gold);
+        border-color: var(--brand-gold) !important;
+        color: var(--brand-gold) !important;
     }
     div.stButton > button[kind="secondary"]::after {
         content: "→";
+        font-size: 1.2em;
         font-weight: 700;
         opacity: 0.7;
         transition: transform 0.15s ease;
     }
     div.stButton > button[kind="secondary"]:hover::after {
-        transform: translateX(3px);
+        transform: translateX(4px);
     }
+
     div[data-testid="stDownloadButton"] > button::before {
         content: "↓";
+        font-size: 1.2em;
         font-weight: 700;
     }
 
-    /* File uploader browse button */
     section[data-testid="stFileUploaderDropzone"] button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        border-radius: 50px;
-        font-size: 0.82rem;
-        padding: 0.35rem 1.1rem;
-        min-height: 2.1rem;
-        background: linear-gradient(120deg, var(--brand-gold) 0%, #B5852A 100%);
-        border-color: var(--brand-gold);
-        color: #FFFFFF;
-        font-weight: 600;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        background: linear-gradient(120deg, var(--brand-gold) 0%, #B5852A 100%) !important;
+        color: #FFFFFF !important;
+        font-size: 0.98rem !important;
+        padding: 0.7rem 1.7rem !important;
     }
     section[data-testid="stFileUploaderDropzone"] button::after {
         content: "↑";
+        font-size: 1.2em;
         font-weight: 700;
     }
     section[data-testid="stFileUploaderDropzone"] button:hover {
-        background: linear-gradient(120deg, #D6A83A 0%, var(--brand-gold) 100%);
-        border-color: #B5852A;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(201, 150, 44, 0.3);
+        background: linear-gradient(120deg, #D6A83A 0%, var(--brand-gold) 100%) !important;
+        box-shadow: 0 10px 22px rgba(201, 150, 44, 0.35);
     }
 
     /* ---------- Cards ---------- */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 12px !important;
+        border-radius: 14px !important;
         border-color: var(--brand-border) !important;
-        box-shadow: 0 2px 8px rgba(20, 55, 74, 0.06);
+        box-shadow: 0 2px 10px rgba(20, 55, 74, 0.07);
         background: #FFFFFF;
+        padding: 0.4rem;
     }
 
     /* ---------- Expanders (case results) ---------- */
     details[data-testid="stExpander"] {
-        border-radius: 8px !important;
-        border-left: 3px solid var(--brand-teal-light) !important;
-        margin-bottom: 0.4rem;
+        border-radius: 10px !important;
+        border-left: 4px solid var(--brand-teal-light) !important;
+        margin-bottom: 0.6rem;
     }
     details[data-testid="stExpander"] summary {
         font-weight: 600;
         color: var(--brand-navy);
+        padding: 0.9rem 1.1rem;
     }
 
     /* ---------- Alerts: colourful left accent ---------- */
     div[data-testid="stAlert"] {
-        border-radius: 8px;
+        border-radius: 10px;
         border-left: 4px solid transparent;
+        padding: 1rem 1.2rem;
     }
     div[data-testid="stAlertContentSuccess"] { color: #1E6B3E; }
     div[data-testid="stAlertContentInfo"] { color: #205C8C; }
@@ -279,19 +328,9 @@ CUSTOM_CSS = """
 
     /* ---------- Inputs ---------- */
     div[data-baseweb="select"] > div, .stTextInput input, .stNumberInput input {
-        border-radius: 7px !important;
-    }
-
-    /* ---------- Sidebar status badge ---------- */
-    .sidebar-badge {
-        display: inline-block;
-        font-size: 0.78rem;
-        font-weight: 600;
-        padding: 0.3rem 0.7rem;
-        border-radius: 999px;
-        background: #E4F5EA;
-        color: #1E6B3E;
-        border: 1px solid #BEE6CC;
+        border-radius: 9px !important;
+        padding-top: 0.55rem !important;
+        padding-bottom: 0.55rem !important;
     }
 </style>
 """
