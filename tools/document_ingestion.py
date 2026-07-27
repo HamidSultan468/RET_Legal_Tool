@@ -136,6 +136,7 @@ def run():
                 file_name="ocr_results.csv",
                 mime="text/csv",
                 type="primary",
+                use_container_width=False,
             )
     else:
         st.info("Please upload one or more files to begin.")

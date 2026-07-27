@@ -84,7 +84,7 @@ def run():
         with col3:
             limit = st.number_input("Number of results to show", min_value=1, max_value=100, value=10)
 
-        search_clicked = st.button("🔍 Search", type="primary")
+        search_clicked = st.button("🔍 Search", type="primary", use_container_width=False)
 
     if search_clicked:
         database_id = databases[db_label]
@@ -117,7 +117,7 @@ def run():
                     case_id = case.get("caseId", {}).get("en", "")
                     with st.expander(case.get("title", "Untitled")):
                         st.write(f"**Citation:** {case.get('citation', '')}")
-                        if case_id and st.button("View Full Details", key=f"meta_{case_id}"):
+                        if case_id and st.button("View Full Details", key=f"meta_{case_id}", use_container_width=False):
                             with st.spinner("Loading details..."):
                                 meta = get_case_metadata(api_key, database_id, case_id)
                             if meta:

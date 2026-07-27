@@ -44,14 +44,14 @@ CUSTOM_CSS = """
     }
 
     .block-container {
-        padding-top: 2.4rem;
-        padding-bottom: 4rem;
+        padding-top: 2rem;
+        padding-bottom: 3.5rem;
         max-width: 1200px;
     }
 
     /* Breathing room between widgets across the whole app */
     div[data-testid="stVerticalBlock"] > div[data-testid="stElementContainer"] {
-        margin-bottom: 0.9rem;
+        margin-bottom: 0.75rem;
     }
     .stTextInput label, .stSelectbox label, .stNumberInput label,
     .stFileUploader label, .stTextArea label {
@@ -66,11 +66,11 @@ CUSTOM_CSS = """
         display: flex;
         align-items: center;
         gap: 0.9rem;
-        padding: 1.4rem 1.8rem;
-        margin-bottom: 2.2rem;
-        border-radius: 16px;
+        padding: 1.2rem 1.6rem;
+        margin-bottom: 1.8rem;
+        border-radius: 14px;
         background: linear-gradient(120deg, var(--brand-navy) 0%, var(--brand-teal) 100%);
-        box-shadow: 0 8px 24px rgba(20, 55, 74, 0.22);
+        box-shadow: 0 6px 18px rgba(20, 55, 74, 0.2);
     }
     .app-header h1 {
         margin: 0;
@@ -212,27 +212,27 @@ CUSTOM_CSS = """
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        gap: 0.6rem;
-        border-radius: 50px !important;
-        font-weight: 700 !important;
-        font-size: 1.02rem !important;
-        padding: 0.85rem 1.9rem !important;
-        min-height: 3rem;
+        gap: 0.45rem;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        padding: 0.5rem 1.2rem !important;
+        min-height: 2.3rem;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(20, 55, 74, 0.14);
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-        letter-spacing: 0.2px;
+        box-shadow: 0 2px 6px rgba(20, 55, 74, 0.12);
+        transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+        letter-spacing: 0.1px;
     }
     div.stButton > button:hover,
     div[data-testid="stDownloadButton"] > button:hover,
     section[data-testid="stFileUploaderDropzone"] button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 26px rgba(20, 55, 74, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(20, 55, 74, 0.22);
     }
     div.stButton > button:active,
     div[data-testid="stDownloadButton"] > button:active,
     section[data-testid="stFileUploaderDropzone"] button:active {
-        transform: translateY(-1px);
+        transform: translateY(0);
     }
 
     div.stButton > button[kind="primary"], div[data-testid="stDownloadButton"] > button {
@@ -281,8 +281,8 @@ CUSTOM_CSS = """
     section[data-testid="stFileUploaderDropzone"] button {
         background: linear-gradient(120deg, var(--brand-gold) 0%, #B5852A 100%) !important;
         color: #FFFFFF !important;
-        font-size: 0.98rem !important;
-        padding: 0.7rem 1.7rem !important;
+        font-size: 0.85rem !important;
+        padding: 0.45rem 1.1rem !important;
     }
     section[data-testid="stFileUploaderDropzone"] button::after {
         content: "↑";

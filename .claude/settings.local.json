@@ -26,7 +26,15 @@
       "Bash(npm *)",
       "Bash(claude doctor *)",
       "Bash(claude update *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(nohup streamlit run main.py --server.headless true --server.port 8501)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP_STATUS:%{http_code}\\\\n\" http://localhost:8501)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"HTTP_STATUS:%{http_code}\\\\n\" --max-time 3 http://localhost:8501)",
+      "PowerShell(Get-Process *)",
+      "Bash(grep -iE \"\\\\.env$|secret|credential|\\\\.key$|\\\\.pem$\")",
+      "Bash(curl *)"
     ]
   }
 }
