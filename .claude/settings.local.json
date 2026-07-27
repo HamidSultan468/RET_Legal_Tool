@@ -1,7 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Start-Sleep -Seconds 3; try { $r = Invoke-WebRequest -Uri \"http://localhost:8501\" -UseBasicParsing -TimeoutSec 10; \"Status: $\\($r.StatusCode\\)\" } catch { \"Error: $\\($_.Exception.Message\\)\" })"
+      "PowerShell(Start-Sleep -Seconds 3; try { $r = Invoke-WebRequest -Uri \"http://localhost:8501\" -UseBasicParsing -TimeoutSec 10; \"Status: $\\($r.StatusCode\\)\" } catch { \"Error: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(winget install *)",
+      "Bash(rm -rf /c/Python314)",
+      "Read(//c/Python314/**)",
+      "PowerShell(tesseract *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Tesseract-OCR\\\\tesseract.exe\" --version)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('main.py', encoding='utf-8'\\).read\\(\\)\\)\")",
+      "Bash(powershell -Command \"Get-Process -Name streamlit -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(taskkill //F //IM streamlit.exe)",
+      "Bash(pkill -f \"streamlit run main.py\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 3 http://localhost:8501)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(streamlit run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8501)",
+      "Bash(python -c \"import ast; [ast.parse\\(open\\(f, encoding='utf-8'\\).read\\(\\)\\) for f in ['tools/ocr_preprocessing.py','tools/document_ingestion.py','Ingestion_Tool/scripts/ingest_ocr.py']]\")",
+      "Bash(tesseract --version)",
+      "Bash(python Ingestion_Tool/scripts/ingest_ocr.py)",
+      "Bash(python *)",
+      "Bash(mkdir -p /tmp/baseline_ocr)",
+      "Bash(git show *)",
+      "Bash(git push *)",
+      "Bash(npm *)",
+      "Bash(claude doctor *)",
+      "Bash(claude update *)",
+      "Bash(git rm *)"
     ]
   }
 }
