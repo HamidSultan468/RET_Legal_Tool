@@ -66,6 +66,8 @@ CUSTOM_CSS = """
         display: flex;
         align-items: center;
         gap: 0.9rem;
+        width: 50%;
+        min-width: 320px;
         padding: 1.2rem 1.6rem;
         margin-bottom: 1.8rem;
         border-radius: 14px;
@@ -94,8 +96,13 @@ CUSTOM_CSS = """
         background: linear-gradient(180deg, var(--sidebar-bg-top) 0%, var(--sidebar-bg-bottom) 100%) !important;
     }
     section[data-testid="stSidebar"] {
-        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+        border-right: none !important;
+        box-shadow: 6px 0 24px -10px rgba(16, 20, 31, 0.35) !important;
         padding-top: 0.5rem;
+    }
+    div[data-testid="stSidebarResizeHandle"] {
+        background: transparent !important;
+        border: none !important;
     }
     section[data-testid="stSidebar"] * {
         color: var(--sidebar-text);
