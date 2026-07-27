@@ -11,8 +11,8 @@ from tools.ocr_preprocessing import PDF_DPI, preprocess_image, run_ocr
 
 def _ocr_lines(img, source_name, page_num, confidence_threshold):
     """Preprocess and run OCR on a single page image, returning extracted line rows."""
-    img = preprocess_image(img)
-    ocr_data = run_ocr(img)
+    processed = preprocess_image(img)
+    ocr_data = run_ocr(processed, img)
 
     n_boxes = len(ocr_data['text'])
     line_text = ""
