@@ -8,48 +8,97 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Complete Cyberpunk / Neon Glowing Custom CSS
-CUSTOM_CSS = """
-<style>
-    /* Background and Main Theme */
-    .stApp {
-        background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-        color: #e6edf3;
-        font-family: 'Inter', sans-serif;
-    }
+# Initialize Theme State (Default: Dark Mode)
+if "theme_mode" not in st.session_state:
+    st.session_state.theme_mode = "dark"
 
-    /* Gradient Headings */
-    h1, h2, h3 {
-        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-        letter-spacing: 1px;
-    }
-
-    /* Glowing Buttons Design */
-    .stButton > button {
-        width: 100% !important;
-        height: 50px !important;
-        border-radius: 12px !important;
-        background: #0d1117 !important;
-        color: #00f2fe !important;
-        border: 2px solid #00f2fe !important;
-        font-weight: 700 !important;
-        font-size: 15px !important;
-        transition: all 0.3s ease-in-out !important;
-        box-shadow: 0 0 10px rgba(0, 242, 254, 0.2) !important;
-    }
-
-    /* Button Hover Effect */
-    .stButton > button:hover {
-        background: #00f2fe !important;
-        color: #000000 !important;
-        box-shadow: 0 0 25px #00f2fe, 0 0 50px #00f2fe !important;
-        transform: translateY(-2px);
-    }
-</style>
-"""
+# 2. Dynamic Custom CSS (Switches between Dark and Light Mode)
+if st.session_state.theme_mode == "dark":
+    CUSTOM_CSS = """
+    <style>
+        .stApp {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800 !important;
+        }
+        .stButton > button {
+            width: 100% !important;
+            height: 50px !important;
+            border-radius: 12px !important;
+            background: #0d1117 !important;
+            color: #00f2fe !important;
+            border: 2px solid #00f2fe !important;
+            font-weight: 700 !important;
+            font-size: 15px !important;
+            transition: all 0.3s ease-in-out !important;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2) !important;
+        }
+        .stButton > button:hover {
+            background: #00f2fe !important;
+            color: #000000 !important;
+            box-shadow: 0 0 25px #00f2fe !important;
+            transform: translateY(-2px);
+        }
+        [data-testid="stFileUploader"] {
+            background-color: #161b22 !important;
+            border: 2px dashed #00f2fe !important;
+            border-radius: 12px !important;
+            padding: 15px !important;
+        }
+        [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] label {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+    </style>
+    """
+else:
+    # Clean Light / Day Mode CSS
+    CUSTOM_CSS = """
+    <style>
+        .stApp {
+            background-color: #f8f9fa;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            color: #0f172a !important;
+            font-weight: 800 !important;
+        }
+        .stButton > button {
+            width: 100% !important;
+            height: 50px !important;
+            border-radius: 12px !important;
+            background: #ffffff !important;
+            color: #0284c7 !important;
+            border: 2px solid #0284c7 !important;
+            font-weight: 700 !important;
+            font-size: 15px !important;
+            transition: all 0.3s ease-in-out !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+        }
+        .stButton > button:hover {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+        [data-testid="stFileUploader"] {
+            background-color: #ffffff !important;
+            border: 2px dashed #0284c7 !important;
+            border-radius: 12px !important;
+            padding: 15px !important;
+        }
+        [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] label {
+            color: #0f172a !important;
+            font-weight: 600 !important;
+        }
+    </style>
+    """
 
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
@@ -63,11 +112,10 @@ st.markdown("---")
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Ingestion Tool"
 
-# Chat History for Legal AI Assistant
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# 5. Equal Size Interactive Buttons Row
+# 5. Equal Size Interactive Buttons Row (Settings replaced with Theme Toggle)
 col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
@@ -83,8 +131,14 @@ with col4:
     if st.button("📚 Documents"):
         st.session_state.current_page = "Documents"
 with col5:
-    if st.button("⚙️ Settings"):
-        st.session_state.current_page = "Settings"
+    # Dynamic Theme Button Label based on current mode
+    theme_icon = "☀️ Day Mode" if st.session_state.theme_mode == "dark" else "🌙 Dark Mode"
+    if st.button(theme_icon):
+        if st.session_state.theme_mode == "dark":
+            st.session_state.theme_mode = "light"
+        else:
+            st.session_state.theme_mode = "dark"
+        st.rerun()
 
 st.markdown("---")
 
@@ -142,8 +196,3 @@ elif st.session_state.current_page == "Legal AI Chatbot":
 elif st.session_state.current_page == "Documents":
     st.header("📚 Managed Documents")
     st.info("Access stored files and generated documents here.")
-
-# --- PAGE 5: Settings ---
-elif st.session_state.current_page == "Settings":
-    st.header("⚙️ Application Settings")
-    st.info("System configurations and API credentials management.")
