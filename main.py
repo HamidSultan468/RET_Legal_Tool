@@ -67,7 +67,7 @@ if "current_page" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# 5. Equal Size Interactive Buttons Row (5 Buttons)
+# 5. Equal Size Interactive Buttons Row
 col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
@@ -102,28 +102,28 @@ if st.session_state.current_page == "Ingestion Tool":
 # --- PAGE 2: CanLII Research Hub ---
 elif st.session_state.current_page == "CanLII Research":
     st.header("🔍 CanLII Research Hub")
-    st.info("CanLII legal research tool is active.")
+    st.info("CanLII legal research tool is active and operational.")
 
 # --- PAGE 3: Legal Expert AI Chatbot (Typing & Voice Command) ---
 elif st.session_state.current_page == "Legal AI Chatbot":
     st.header("🤖 High-Precision Legal AI Assistant")
-    st.write("قانونی امور، کیس لا یا پیچیدہ دستاویزات کے حل کے لیے چیٹ بوٹ سے مشورہ کریں:")
+    st.write("Consult the AI assistant for legal matters, case analysis, or complex document queries:")
 
     # Display Previous Chat Messages
     for message in st.session_state.chat_history:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # 🎙️ Voice Input Option
-    st.write("🎤 **آواز سے سوال پوچھیں (Voice Command):**")
+    # Voice Input Option
+    st.write("🎤 **Voice Command Input:**")
     audio_val = st.audio_input("Record your legal query")
 
     if audio_val:
         st.audio(audio_val)
-        st.info("آواز کا پیغام موصول ہو گیا۔ پروسیسنگ ہو رہی ہے...")
+        st.info("Voice input received. Processing query...")
 
-    # 💬 Text Typing Input Option
-    user_query = st.chat_input("اپنا قانونی سوال یا کیس کا معاملہ یہاں لکھیں...")
+    # Text Typing Input Option
+    user_query = st.chat_input("Type your legal question or case details here...")
 
     if user_query:
         # User Message
@@ -132,7 +132,7 @@ elif st.session_state.current_page == "Legal AI Chatbot":
             st.markdown(user_query)
 
         # AI Bot Response Placeholder
-        bot_reply = f"**Legal Analysis for:** '{user_query}'\n\nاس مسئلے کا قانونی جائزہ اور متعلقہ دفعات کے مطابق جواب تیار کیا جا رہا ہے۔ (یہاں آپ کا AI LLM API رسپانس منسلک ہوگا)۔"
+        bot_reply = f"**Legal Analysis for:** '{user_query}'\n\nAnalyzing the provided context and relevant legal statutes. (LLM API response will be rendered here)."
         
         st.session_state.chat_history.append({"role": "assistant", "content": bot_reply})
         with st.chat_message("assistant"):
@@ -146,4 +146,4 @@ elif st.session_state.current_page == "Documents":
 # --- PAGE 5: Settings ---
 elif st.session_state.current_page == "Settings":
     st.header("⚙️ Application Settings")
-    st.info("System and API configurations.")
+    st.info("System configurations and API credentials management.")
