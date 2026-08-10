@@ -6,3 +6,5 @@ pdf2image
 Pillow
 pandas
 numpy
+pypdf
+pdfplumber
