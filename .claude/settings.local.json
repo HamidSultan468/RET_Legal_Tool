@@ -34,7 +34,11 @@
       "Bash(curl -s -o /dev/null -w \"HTTP_STATUS:%{http_code}\\\\n\" --max-time 3 http://localhost:8501)",
       "PowerShell(Get-Process *)",
       "Bash(grep -iE \"\\\\.env$|secret|credential|\\\\.key$|\\\\.pem$\")",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(where python *)",
+      "Bash(pip show *)",
+      "Bash(pdftoppm -v)",
+      "Bash(tasklist)"
     ]
   }
 }
