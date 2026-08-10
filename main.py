@@ -54,22 +54,48 @@ CUSTOM_CSS = """
 # Inject CSS into Streamlit
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# 3. Main Header
+# 3. App Header
 st.title("⚡ RET Legal Tools Platform")
 st.subheader("Next-Gen Legal Tools & Document Processing")
 
 st.markdown("---")
 
-# 4. Equal Size Buttons Row
+# 4. Navigation Session State Setup
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "Ingestion Tool"
+
+# 5. Equal Size Interactive Buttons Row
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.button("📄 Ingestion Tool")
+    if st.button("📄 Ingestion Tool"):
+        st.session_state.current_page = "Ingestion Tool"
 with col2:
-    st.button("🔍 CanLII Research")
+    if st.button("🔍 CanLII Research"):
+        st.session_state.current_page = "CanLII Research"
 with col3:
-    st.button("📚 Documents")
+    if st.button("📚 Documents"):
+        st.session_state.current_page = "Documents"
 with col4:
-    st.button("⚙️ Settings")
+    if st.button("⚙️ Settings"):
+        st.session_state.current_page = "Settings"
 
 st.markdown("---")
+
+# 6. Dynamic Content Display Based on Active Button
+if st.session_state.current_page == "Ingestion Tool":
+    st.header("📄 Document Ingestion Tool")
+    st.success("Document Ingestion module active and ready!")
+    # Insert your document processing code here
+
+elif st.session_state.current_page == "CanLII Research":
+    st.header("🔍 CanLII Research Hub")
+    st.info("CanLII legal research tool is active.")
+
+elif st.session_state.current_page == "Documents":
+    st.header("📚 Managed Documents")
+    st.info("Access stored files and generated documents here.")
+
+elif st.session_state.current_page == "Settings":
+    st.header("⚙️ Application Settings")
+    st.info("System and API configurations.")
