@@ -1,4 +1,6 @@
-streamlit
+# streamlit>=1.49 is required: the UI uses the width="stretch" API that
+# replaced the deprecated use_container_width argument in that release.
+streamlit>=1.49
 requests
 python-dotenv
 pytesseract
@@ -7,4 +9,3 @@ Pillow
 pandas
 numpy
 pypdf
-pdfplumber

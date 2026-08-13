@@ -1,7 +1,10 @@
-import streamlit as st
-import requests
-from dotenv import load_dotenv
 import os
+
+import requests
+import streamlit as st
+from dotenv import load_dotenv
+
+from tools import ui
 
 load_dotenv()
 
@@ -22,15 +25,36 @@ def _get_databases(api_key):
     if "canlii_databases" in st.session_state:
         return st.session_state["canlii_databases"]
 
-    url = f"{BASE_URL}/caseBrowse/en/"
-    r = requests.get(url, params={"api_key": api_key}, timeout=15)
+    try:
+        r = requests.get(
+            f"{BASE_URL}/caseBrowse/en/", params={"api_key": api_key}, timeout=15
+        )
+    except Exception as e:
+        ui.banner("err", f"Could not reach the CanLII API: {e}")
+        return {}
+
     if r.status_code != 200:
-        st.error(f"API Error loading court list: {r.status_code}")
+        ui.banner("err", _explain_status(r.status_code, "loading the court list"))
         return {}
 
     databases = {db["name"]: db["databaseId"] for db in r.json().get("caseDatabases", [])}
     st.session_state["canlii_databases"] = databases
     return databases
+
+
+def _explain_status(code, action):
+    """Turn a bare HTTP code into something a non-developer can act on."""
+    if code in (401, 403):
+        return (
+            f"<b>CanLII rejected the API key</b> while {action} (HTTP {code}). "
+            "Check that the key is correct and still active."
+        )
+    if code == 429:
+        return (
+            f"<b>Rate limit reached</b> while {action} (HTTP {code}). "
+            "Wait a minute, then try again with fewer results."
+        )
+    return f"<b>CanLII returned HTTP {code}</b> while {action}."
 
 
 def _matches_keyword(case, tokens):
@@ -42,122 +66,173 @@ def _matches_keyword(case, tokens):
 
 
 def run():
-    st.markdown(
-        '<div class="app-header"><h1>📚 CanLII Research Tool</h1>'
-        "</div>",
-        unsafe_allow_html=True,
+    ui.page_head(
+        "Tool 02",
+        "CanLII Research",
+        "Browse Canadian court and tribunal decisions through the CanLII API. "
+        "Pick a court, optionally narrow by keyword or date, and open any "
+        "result on canlii.org.",
     )
-    st.write("Search Canadian court case law from CanLII.")
 
     api_key = os.getenv("CANLII_API_KEY", "")
     if not api_key:
-        api_key = st.sidebar.text_input("CanLII API Key", type="password")
+        api_key = st.sidebar.text_input("CanLII API key", type="password")
+
     if not api_key:
-        st.warning("No API key found. Please provide one in the sidebar.")
+        ui.banner(
+            "warn",
+            "<b>No API key configured.</b> Add <code>CANLII_API_KEY</code> to "
+            "your <code>.env</code> file, or paste a key into the sidebar box "
+            "to use one for this session only.",
+        )
+        ui.hint(
+            "Keys are issued free by CanLII at "
+            "<a href='https://www.canlii.org/en/info/api.html' target='_blank'>"
+            "canlii.org/en/info/api.html</a>.",
+        )
         return
 
-    st.sidebar.markdown('<span class="sidebar-badge">✓ API Key loaded</span>', unsafe_allow_html=True)
-
-    with st.spinner("Loading list of courts/tribunals..."):
+    with st.spinner("Loading courts and tribunals…"):
         databases = _get_databases(api_key)
 
     if not databases:
-        st.error("Could not load the list of courts/tribunals.")
         return
 
     with st.container(border=True):
-        db_label = st.selectbox("Select Court", sorted(databases.keys()))
+        st.markdown('<div class="card-title">Search</div>', unsafe_allow_html=True)
 
+        db_label = st.selectbox("Court or tribunal", sorted(databases.keys()))
         keyword = st.text_input(
-            "Search keyword (matches case title / citation)",
+            "Keyword",
+            placeholder="e.g. negligence",
             help=(
-                "CanLII's API does not support full-text search of decisions, "
-                "so this matches against the case title and citation only."
+                "CanLII's API has no full-text search, so this matches against "
+                "case titles and citations only — not the text of decisions."
             ),
         )
 
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            published_after = st.text_input("Published after (YYYY-MM-DD)", "")
-        with col2:
-            published_before = st.text_input("Published before (YYYY-MM-DD)", "")
-        with col3:
-            limit = st.number_input("Number of results to show", min_value=1, max_value=100, value=10)
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            published_after = st.text_input("Published after", placeholder="YYYY-MM-DD")
+        with c2:
+            published_before = st.text_input("Published before", placeholder="YYYY-MM-DD")
+        with c3:
+            limit = st.number_input("Results", min_value=1, max_value=100, value=10)
 
-        search_clicked = st.button("🔍 Search", type="primary", use_container_width=False)
+        search_clicked = st.button("Search", type="primary")
 
     if search_clicked:
-        database_id = databases[db_label]
-        keyword_tokens = [t.lower() for t in keyword.split() if t.strip()]
+        st.session_state["canlii_query"] = {
+            "database_id": databases[db_label],
+            "tokens": [t.lower() for t in keyword.split() if t.strip()],
+            "after": published_after or None,
+            "before": published_before or None,
+            "limit": int(limit),
+        }
+        st.session_state.pop("canlii_details", None)
 
-        with st.spinner("Searching..."):
-            # When scanning for a keyword, pull a larger candidate batch so
-            # there's something worth filtering; otherwise just browse the
-            # most recent decisions.
-            scan_count = MAX_SCAN if keyword_tokens else limit
-            candidates = get_cases(
-                api_key, database_id, scan_count,
-                published_after=published_after or None,
-                published_before=published_before or None,
-            )
+    query = st.session_state.get("canlii_query")
+    if not query:
+        ui.hint("Choose a court and run a search to see decisions.")
+        return
 
-        if candidates is None:
-            st.error("No response received from the API.")
-        else:
-            if keyword_tokens:
-                results = [c for c in candidates if _matches_keyword(c, keyword_tokens)][:limit]
-            else:
-                results = candidates[:limit]
+    with st.spinner("Searching CanLII…"):
+        # When scanning for a keyword, pull a larger candidate batch so
+        # there's something worth filtering; otherwise just browse the
+        # most recent decisions.
+        scan_count = MAX_SCAN if query["tokens"] else query["limit"]
+        candidates = get_cases(
+            api_key,
+            query["database_id"],
+            scan_count,
+            published_after=query["after"],
+            published_before=query["before"],
+        )
 
-            if len(results) == 0:
-                st.info("No results found.")
-            else:
-                st.success(f"{len(results)} cases found.")
-                for case in results:
-                    case_id = case.get("caseId", {}).get("en", "")
-                    with st.expander(case.get("title", "Untitled")):
-                        st.write(f"**Citation:** {case.get('citation', '')}")
-                        if case_id and st.button("View Full Details", key=f"meta_{case_id}", use_container_width=False):
-                            with st.spinner("Loading details..."):
-                                meta = get_case_metadata(api_key, database_id, case_id)
-                            if meta:
-                                st.write(f"**Date:** {meta.get('decisionDate', 'Unknown')}")
-                                st.write(f"**Docket:** {meta.get('docketNumber', '')}")
-                        if case_id:
-                            url = f"https://www.canlii.org/en/{database_id}/doc/{case_id}.html"
-                            st.markdown(f"[View on CanLII]({url})")
+    if candidates is None:
+        return
+
+    if query["tokens"]:
+        results = [c for c in candidates if _matches_keyword(c, query["tokens"])][
+            : query["limit"]
+        ]
+    else:
+        results = candidates[: query["limit"]]
+
+    if not results:
+        ui.banner(
+            "info",
+            "<b>No matching decisions.</b> Keyword matching only covers titles "
+            "and citations, so try a party name or a broader term.",
+        )
+        return
+
+    scanned_note = (
+        f" (filtered from the {len(candidates)} most recent decisions)"
+        if query["tokens"]
+        else ""
+    )
+    ui.banner("ok", f"<b>{len(results)} decision(s) found.</b>{scanned_note}")
+
+    details = st.session_state.setdefault("canlii_details", {})
+
+    for case in results:
+        case_id = case.get("caseId", {}).get("en", "")
+        title = case.get("title", "Untitled")
+        citation = case.get("citation", "")
+
+        with st.expander(title):
+            if citation:
+                st.markdown(f"**Citation:** {citation}")
+
+            if case_id:
+                url = f"https://www.canlii.org/en/{query['database_id']}/doc/{case_id}.html"
+
+                meta = details.get(case_id)
+                if meta:
+                    st.markdown(f"**Decision date:** {meta.get('decisionDate', 'Unknown')}")
+                    st.markdown(f"**Docket:** {meta.get('docketNumber', '—') or '—'}")
+                elif st.button("Load details", key=f"meta_{case_id}"):
+                    with st.spinner("Loading…"):
+                        fetched = get_case_metadata(api_key, query["database_id"], case_id)
+                    if fetched:
+                        details[case_id] = fetched
+                        st.rerun()
+
+                st.markdown(f"[Open on CanLII →]({url})")
 
 
 def get_cases(api_key, database_id, result_count, published_after=None, published_before=None):
     try:
-        url = f"{BASE_URL}/caseBrowse/en/{database_id}/"
         params = {"api_key": api_key, "offset": 0, "resultCount": result_count}
         if published_after:
             params["publishedAfter"] = published_after
         if published_before:
             params["publishedBefore"] = published_before
 
-        r = requests.get(url, params=params, timeout=20)
+        r = requests.get(
+            f"{BASE_URL}/caseBrowse/en/{database_id}/", params=params, timeout=20
+        )
         if r.status_code == 200:
             return r.json().get("cases", [])
-        else:
-            st.error(f"API Error: {r.status_code}")
-            return None
+        ui.banner("err", _explain_status(r.status_code, "searching"))
+        return None
     except Exception as e:
-        st.error(f"Error: {e}")
+        ui.banner("err", f"Could not reach the CanLII API: {e}")
         return None
 
 
 def get_case_metadata(api_key, database_id, case_id):
     try:
-        url = f"{BASE_URL}/caseBrowse/en/{database_id}/{case_id}/"
-        params = {"api_key": api_key}
-        r = requests.get(url, params=params, timeout=10)
+        r = requests.get(
+            f"{BASE_URL}/caseBrowse/en/{database_id}/{case_id}/",
+            params={"api_key": api_key},
+            timeout=10,
+        )
         if r.status_code == 200:
             return r.json()
-        else:
-            st.error(f"API Error: {r.status_code}")
-            return None
+        ui.banner("err", _explain_status(r.status_code, "loading case details"))
+        return None
     except Exception as e:
-        st.error(f"Error: {e}")
+        ui.banner("err", f"Could not reach the CanLII API: {e}")
         return None
