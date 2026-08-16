@@ -4,6 +4,7 @@ RET Legal Tools Platform -- app entry point.
 Run with:  streamlit run main.py
 """
 
+import utils.session
 import streamlit as st
 
 st.set_page_config(
